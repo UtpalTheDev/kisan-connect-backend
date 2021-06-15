@@ -12,6 +12,7 @@ const { verifyAuth } = require("./middlewares/verifyAuth.middleware")
 const login=require("./routes/login.router.js");
 const signup=require("./routes/signup.router.js");
 const user=require("./routes/user.router.js");
+const posts=require("./routes/post.router.js");
 
 app.use(bodyparse.json())
 app.use(cors());
@@ -26,9 +27,9 @@ app.get("/", (req, res) => {
 
 app.use('/login',login);
 app.use('/signup',signup)
-
+app.use('/posts',posts);
+app.use("/user",verifyAuth,user);
 app.use(routeNotFound);
-
 app.use(errorHandler);
 
 const port=process.env.PORT || 3100

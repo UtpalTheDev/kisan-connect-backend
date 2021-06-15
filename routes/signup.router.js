@@ -1,5 +1,6 @@
 const express=require("express");
 const bcrypt=require("bcrypt");
+const mongoose=require("mongoose");
 const router=express.Router();
 const bodyParser=require("body-parser");
 const {usermodel}=require("../models/user.model.js")
@@ -17,7 +18,7 @@ router.route("/")
       const {userName,password,email}=req.body.user;
       let user=await usermodel.findOne({email});
       if(!user){
-      user=await usermodel.create({userName,password,email});
+      user=await usermodel.create({_id:new mongoose.Types.ObjectId(), userName,password,email});
       const salt=await bcrypt.genSalt(10);
       user.password=await bcrypt.hash(user.password,salt);
       await user.save();
@@ -30,6 +31,7 @@ router.route("/")
       
   }
   catch(error){
+    console.log(error)
     res.status(500).json({message:error});
   }
 })

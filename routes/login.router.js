@@ -8,6 +8,7 @@ let jwt=require('jsonwebtoken');
 router.route("/")
 .post(async(req,res)=>{
   try{
+    console.log("here data",req.body.user)
       const {error} = loginValidation(req.body.user);
       if (error){
         return res.status(400).json({message:error.details[0].message})
@@ -26,7 +27,7 @@ router.route("/")
         }
       }
       else {
-      res.status(401).json({ error: "User does not exist" });
+      res.status(401).json({ message: "User does not exist" });
     }
 
       
