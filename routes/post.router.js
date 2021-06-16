@@ -4,17 +4,21 @@ const router=express.Router();
 const { extend } = require("lodash");
 const {postmodel}=require("../models/post.model.js")
 const {commentmodel}=require("../models/comment.model.js")
-
+const {usermodel}=require("../models/user.model.js")
 
 router.route('/')
  .get(async (req, res) => {
    try{
      const {userId}=req;
      console.log(userId)
-     const posts=await postmodel.find({});
+     const userdata= await usermodel.findOne({_id:userId});
+     console.log(userdata.following)
+     const query=postmodel.find({"user.userID":{$in:userdata.following}})
+     const posts=await query.exec();
      res.status(200).json(posts)
    }
    catch (error){
+     console.log(error)
      res.status(500).json({success:500,message:"unable to get posts",errormessage:error.message})
    }
   

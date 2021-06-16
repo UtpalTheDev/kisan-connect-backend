@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 app.use('/login',login);
 app.use('/signup',signup)
-app.use('/posts',posts);
+app.use('/posts',verifyAuth,posts);
 app.use("/user",verifyAuth,user);
 app.use(routeNotFound);
 app.use(errorHandler);
