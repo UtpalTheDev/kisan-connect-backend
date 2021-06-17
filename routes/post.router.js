@@ -44,16 +44,19 @@ router.route('/')
 router.route("/likes")
 .post(async(req, res) => {
   try{
-    //  const {userId}=req;
-     let {postID,userID}=req.body;
+      const {userId}=req;
+     let {postID,name}=req.body;
      
      let post=await postmodel.findOne({_id:postID});
     //  console.log(post)
-     if(!post.likes.find(item=>item===userID))
+     if(!post.likes.find(item=>item===userId))
      {
        console.log("enter")
-       post.likes.push(userID);
+       post.likes.push(userId);
        post=await post.save();
+       let postOwnerData=await usermodel.findOne({_id:post.user.userID});
+       postOwnerData.notification.push(`${name} liked your post`)
+       await postOwnerData.save();
        return res.json({success:true,post})
      }
      
@@ -92,8 +95,11 @@ router.route("/comment")
     try{
      const {userId}=req;
      let {commentobj}=req.body;
-     console.log(commentobj)
-     let comment=await commentmodel.create({_id:new mongoose.Types.ObjectId(),...commentobj})
+     let comment=await commentmodel.create({_id:new mongoose.Types.ObjectId(),...commentobj});
+     let postData=await postmodel.findOne({_id:comment.postID});
+     let postOwnerData=await usermodel.findOne({_id:postData.user.userID});
+     postOwnerData.notification.push(`${comment.user.name} commented on your post`)
+    await postOwnerData.save();
      res.json({success:true,comment})
   }
   
