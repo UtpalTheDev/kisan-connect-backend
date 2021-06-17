@@ -27,12 +27,16 @@ router.route('/')
   try{
      const {userId}=req;
      let {postobj}=req.body;
-     let post=await postmodel.create({_id:new mongoose.Types.ObjectId(),...postobj})
+     let post=await postmodel.create({_id:new mongoose.Types.ObjectId(),...postobj});
+     let userdata=await usermodel.findOne({_id:userId})
+     
+     let query=await usermodel.updateMany({_id:{$in:userdata.followers}},{$push:{"notification":`${userdata.userName} added a new post`}});
+     
   res.json({success:true,post})
   }
   
   catch (error){
-    
+    console.log("error",error)
     res.status(500).json({success:false,message:"unable to add posts",errormessage:error.message})
   }
 })

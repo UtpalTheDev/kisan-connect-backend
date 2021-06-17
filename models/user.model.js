@@ -7,7 +7,8 @@ email:{type:String,required:true},
 password:{type:String,required:true},
 followrequest:[{type:String}],
 followers:[{type:String}],
-following:[{type:String}]
+following:[{type:String}],
+notification:[{type:String}]
 })
 
 //model creation
