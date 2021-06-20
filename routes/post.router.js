@@ -13,7 +13,7 @@ router.route('/')
      console.log(userId)
      const userdata= await usermodel.findOne({_id:userId});
      console.log(userdata.following)
-     const query=postmodel.find({"user.userID":{$in:userdata.following}})
+     const query=postmodel.find({"user.userID":{$in:[...userdata.following,userId]}})
      const posts=await query.exec();
      res.status(200).json(posts)
    }
@@ -61,7 +61,7 @@ router.route("/likes")
      }
      
     else{
-      post.likes=post.likes.filter(item=>item!==userID);
+      post.likes=post.likes.filter(item=>item!==userId);
       post= await post.save();
       console.log(post)
       return res.json({success:true,post})
@@ -125,5 +125,20 @@ router.route("/comment/reply")
     
     res.status(500).json({success:false,message:"unable to add posts",errormessage:error.message})
   }
+})
+router.route('/user_specific_post')
+ .get(async (req, res) => {
+   try{
+     const {userId}=req;
+     console.log(userId)
+     const posts=await postmodel.find({"user.userID":userId})
+     console.log
+     res.status(200).json(posts)
+   }
+   catch (error){
+     console.log(error)
+     res.status(500).json({success:500,message:"unable to get posts",errormessage:error.message})
+   }
+  
 })
 module.exports=router

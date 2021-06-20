@@ -13,7 +13,7 @@ const login=require("./routes/login.router.js");
 const signup=require("./routes/signup.router.js");
 const user=require("./routes/user.router.js");
 const posts=require("./routes/post.router.js");
-
+const suggestion=require("./routes/suggestion.router.js")
 app.use(bodyparse.json())
 app.use(cors());
 
@@ -29,6 +29,7 @@ app.use('/login',login);
 app.use('/signup',signup)
 app.use('/posts',verifyAuth,posts);
 app.use("/user",verifyAuth,user);
+app.use("/suggestion",verifyAuth,suggestion)
 app.use(routeNotFound);
 app.use(errorHandler);
 
