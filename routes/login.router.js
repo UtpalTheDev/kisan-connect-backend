@@ -23,7 +23,7 @@ router.route("/")
           res.status(200).json({message:"success",token});
         }
         else{
-          res.status(400).json({ error: "Email or password is wrong" });
+          res.status(400).json({ message: "Email or password is wrong" });
         }
       }
       else {

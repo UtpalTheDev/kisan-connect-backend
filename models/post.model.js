@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 const userefSchema=new mongoose.Schema({
 					userID: {type:String,required:true},
-					name: {type:String,required:true}
+					userName: {type:String,required:true}
 })
 const postSchema=new mongoose.Schema({
 
@@ -9,7 +9,7 @@ const postSchema=new mongoose.Schema({
 				caption: {type:String},
 				likes: [{type:String,required:true}],
 				user: userefSchema,
-
+        date:{type:Date,required:true}
 			
 })
 

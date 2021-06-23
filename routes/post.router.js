@@ -45,7 +45,7 @@ router.route("/likes")
 .post(async(req, res) => {
   try{
       const {userId}=req;
-     let {postID,name}=req.body;
+     let {postID,userName}=req.body;
      
      let post=await postmodel.findOne({_id:postID});
     //  console.log(post)
@@ -55,7 +55,7 @@ router.route("/likes")
        post.likes.push(userId);
        post=await post.save();
        let postOwnerData=await usermodel.findOne({_id:post.user.userID});
-       postOwnerData.notification.push(`${name} liked your post`)
+       postOwnerData.notification.push(`${userName} liked your post`)
        await postOwnerData.save();
        return res.json({success:true,post})
      }
@@ -98,7 +98,7 @@ router.route("/comment")
      let comment=await commentmodel.create({_id:new mongoose.Types.ObjectId(),...commentobj});
      let postData=await postmodel.findOne({_id:comment.postID});
      let postOwnerData=await usermodel.findOne({_id:postData.user.userID});
-     postOwnerData.notification.push(`${comment.user.name} commented on your post`)
+     postOwnerData.notification.push(`${comment.user.userName} commented on your post`)
     await postOwnerData.save();
      res.json({success:true,comment})
   }
@@ -134,6 +134,39 @@ router.route('/user_specific_post')
      const posts=await postmodel.find({"user.userID":userId})
      console.log
      res.status(200).json(posts)
+   }
+   catch (error){
+     console.log(error)
+     res.status(500).json({success:500,message:"unable to get posts",errormessage:error.message})
+   }
+  
+})
+router.route('/following_user_post')
+ .post(async (req, res) => {
+   try{
+     const {userId}=req;
+     console.log(userId);
+     const {userName}=req.body
+     const posts=await postmodel.find({"user.userName":userName})
+     console.log
+     res.status(200).json(posts)
+   }
+   catch (error){
+     console.log(error)
+     res.status(500).json({success:500,message:"unable to get posts",errormessage:error.message})
+   }
+  
+})
+router.route('/delete')
+ .delete(async (req, res) => {
+   try{
+     const {userId}=req;
+     const {postdeleteobj}=req.body;
+     if(postdeleteobj.user.userID===userId){
+       await postmodel.remove(postdeleteobj);
+       res.status(200).json({message:"post deleted",postdeleteobj})
+     }
+     
    }
    catch (error){
      console.log(error)

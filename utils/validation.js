@@ -4,6 +4,7 @@ const signupValidation=(data)=>{
 
   const schema = Joi.object ({
     userName: Joi.string().min(6).required(),
+    name:Joi.string().required(),
     email: Joi.string().min(6).required().email(),
     password: Joi.string().min(6).required()
   })
