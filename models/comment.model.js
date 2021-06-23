@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 const userefSchema=new mongoose.Schema({
 					userID: {type:String,required:true},
-					name: {type:String,required:true}
+					userName: {type:String,required:true}
 })
 const commentSchema=new mongoose.Schema({
   		  _id:mongoose.Schema.Types.ObjectId,

@@ -11,6 +11,16 @@ const signupValidation=(data)=>{
   return schema.validate(data)
   
 }
+const updateValidation=(data)=>{
+
+  const schema = Joi.object ({
+    userName: Joi.string().min(6),
+    name:Joi.string(),
+    email: Joi.string().min(6).email(),
+  })
+  return schema.validate(data)
+  
+}
 const loginValidation=(data)=>{
 
   const schema = Joi.object({
@@ -22,3 +32,4 @@ const loginValidation=(data)=>{
 }
 module.exports.signupValidation=signupValidation;
 module.exports.loginValidation=loginValidation;
+module.exports.updateValidation=updateValidation;

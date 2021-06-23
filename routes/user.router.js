@@ -2,6 +2,9 @@ const express=require("express");
 const router=express.Router();
 const { extend } = require("lodash");
 const {usermodel}=require("../models/user.model.js")
+const {postmodel}=require("../models/post.model.js")
+const {commentmodel}=require("../models/comment.model.js")
+const {updateValidation} = require("../utils/validation")
 
 router.route('/')
  .get(async (req, res) => {
@@ -16,6 +19,31 @@ router.route('/')
   
 })
 
+router.route('/update')
+ .post(async (req, res) => {
+   try{
+     const {userId}=req;
+     const {updatedobj}=req.body;
+     let {error}=updateValidation(updatedobj)
+     if (error){
+        return res.status(400).json({message:error.details[0].message})
+      }
+      let userWithSameUserName=await usermodel.findOne({userName:updatedobj.userName});
+     if(!userWithSameUserName){
+        let userdata=await usermodel.updateOne({_id:userId},updatedobj)
+        await postmodel.updateMany({"user.userID":userId},{"user.userName":updatedobj.userName})
+        await commentmodel.updateMany({"user.userID":userId},{"user.userName":updatedobj.userName})
+        userdata=await usermodel.findOne({_id:userId}).select("userName name email bio")
+        console.log(userdata)
+       return res.status(200).json(userdata)
+     }          
+     res.status(400).json({message:"userName already exists"})
+   }
+   catch (error){
+     res.status(500).json({success:500,message:"unable to update",errormessage:error.message})
+   }
+  
+})
 router.route('/details')
  .get(async (req, res) => {
    try{
