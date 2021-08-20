@@ -17,6 +17,7 @@ const updateValidation=(data)=>{
     userName: Joi.string().min(6),
     name:Joi.string(),
     email: Joi.string().min(6).email(),
+    bio: Joi.string()
   })
   return schema.validate(data)
   

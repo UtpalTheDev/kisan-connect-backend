@@ -9,7 +9,8 @@ const commentSchema=new mongoose.Schema({
         reply:[],
 				caption: {type:String},
 				likes: [{type:String,required:true}],
-				user: userefSchema
+				user: userefSchema,
+        date:{type:Date,required:true}
 			
 })
 

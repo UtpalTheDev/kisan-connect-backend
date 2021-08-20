@@ -75,6 +75,22 @@ router.route("/likes")
   }
 })
 
+router.route("/like_data")
+.post(async(req,res)=>{
+  try{
+     let {id}=req.params;
+     let {postId}=req.body;
+     let likedata= await postmodel.findOne({_id:postId}).select("likes");
+     console.log(likedata)
+     let likeuserdata=await usermodel.find({_id:{$in:likedata.likes}}).select("userName")
+     console.log(likeuserdata);
+     res.status(200).json({success:true,postId,likeuserdata});
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({success:false,message:"unable to get likedata",errormessage:error.message})
+  }
+})
 router.route("/comment/:id")
 .get(async(req,res)=>{
   try{
@@ -123,7 +139,7 @@ router.route("/comment/reply")
   
   catch (error){
     
-    res.status(500).json({success:false,message:"unable to add posts",errormessage:error.message})
+    res.status(500).json({success:false,message:"unable to add comment",errormessage:error.message})
   }
 })
 router.route('/user_specific_post')

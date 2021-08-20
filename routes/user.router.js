@@ -10,7 +10,7 @@ router.route('/')
  .get(async (req, res) => {
    try{
      const {userId}=req;
-     const userdata=await usermodel.findOne({_id:userId}).select('_id userName email');
+     const userdata=await usermodel.findOne({_id:userId}).select('_id userName email following followrequestsent');
      res.status(200).json(userdata)
    }
    catch (error){
@@ -28,14 +28,19 @@ router.route('/update')
      if (error){
         return res.status(400).json({message:error.details[0].message})
       }
+      let userPrevData=await usermodel.findOne({_id:userId});
+      let userWithSameEmail=await usermodel.findOne({userName:updatedobj.email});
       let userWithSameUserName=await usermodel.findOne({userName:updatedobj.userName});
-     if(!userWithSameUserName){
+     if(userPrevData.userName===updatedobj.userName || !userWithSameUserName){
+       if(userPrevData.email===updatedobj.email || !userWithSameEmail){
         let userdata=await usermodel.updateOne({_id:userId},updatedobj)
         await postmodel.updateMany({"user.userID":userId},{"user.userName":updatedobj.userName})
         await commentmodel.updateMany({"user.userID":userId},{"user.userName":updatedobj.userName})
         userdata=await usermodel.findOne({_id:userId}).select("userName name email bio")
         console.log(userdata)
        return res.status(200).json(userdata)
+       }
+       return res.status(400).json({message:"email already exists"})
      }          
      res.status(400).json({message:"userName already exists"})
    }
@@ -48,7 +53,7 @@ router.route('/details')
  .get(async (req, res) => {
    try{
      const {userId}=req;
-     const userdata=await usermodel.findOne({_id:userId}).select("followrequestsent followers following");
+     const userdata=await usermodel.findOne({_id:userId}).select("followrequestsent followers following bio name");
      res.status(200).json(userdata)
    }
    catch (error){
@@ -177,7 +182,7 @@ router.route('/:userName')
      const {userId}=req;
      let {userName}=req.params
      
-     const userdata=await usermodel.findOne({userName}).select("followers following followrequestgot followrequestsent name userName email notification _id");
+     const userdata=await usermodel.findOne({userName}).select("followers following followrequestgot followrequestsent name userName email notification _id bio");
      res.status(200).json(userdata)
    }
    catch (error){

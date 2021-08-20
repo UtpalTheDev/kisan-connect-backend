@@ -11,7 +11,7 @@ router.route('/follow')
      res.status(200).json(followSuggestion);
    }
    catch (error){
-     res.status(500).json({success:500,message:"unable to get userdata",errormessage:error.message})
+     res.status(500).json({success:500,message:"unable to get suggestiondata",errormessage:error.message})
    }
   
 })
